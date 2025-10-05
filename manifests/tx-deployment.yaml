@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transmission
+spec:
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      containers:
+        - name: transmission
+          image: lscr.io/linuxserver/transmission:latest
+          env:
+            - name: PGID
+              value: "1000"
+            - name: PUID
+              value: "1000"
+            - name: TRANSMISSION_WEB_HOME
+            - name: TZ
+              value: US/Eastern
+            - name: USER
+            - name: WHITELIST
+          ports:
+            - containerPort: 9091
+              protocol: TCP
+              name: http
+            - containerPort: 51413
+              protocol: TCP
+            - containerPort: 51413
+              protocol: UDP
+          volumeMounts:
+            - mountPath: /config
+              name: tx-data
+      restartPolicy: Always
+      volumes:
+        - name: tx-data
+          persistentVolumeClaim:
+            claimName: tx-data
