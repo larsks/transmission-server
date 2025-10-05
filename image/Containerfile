@@ -1,0 +1,6 @@
+FROM docker.io/alpine:latest
+
+RUN apk add transmission-daemon
+WORKDIR /app
+COPY start-tranmission-daemon.sh .
+CMD ["sh", "start-tranmission-daemon.sh"]

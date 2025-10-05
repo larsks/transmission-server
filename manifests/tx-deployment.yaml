@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transmission
+spec:
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      containers:
+        - name: transmission
+          image: ghcr.io/larsks/transmission-server:main
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9091
+              protocol: TCP
+              name: http
+            - containerPort: 51413
+              protocol: TCP
+              name: peer-tcp
+            - containerPort: 51413
+              protocol: UDP
+              name: peer-udp
+          volumeMounts:
+            - mountPath: /tx
+              name: tx-data
+          envFrom:
+            - secretRef:
+                name: transmission-auth
+      restartPolicy: Always
+      volumes:
+        - name: tx-data
+          persistentVolumeClaim:
+            claimName: tx-data
